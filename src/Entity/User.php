@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -14,8 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  * @UniqueEntity(fields={"displayName"}, message="There is already an account with this username")
  */
-class User implements  \JsonSerializable
+class User implements  UserInterface,\JsonSerializable
 {
+
 
 
     /**
@@ -95,6 +97,11 @@ class User implements  \JsonSerializable
      * @ORM\OneToMany(targetEntity=FriendRequest::class, mappedBy="receiver", orphanRemoval=true)
      */
     private ArrayCollection $receivedFriendRequests;
+
+    public function getUserIdentifier($name, $arguments):string
+    {
+        return $this->id;
+    }
 
     public function __construct()
     {

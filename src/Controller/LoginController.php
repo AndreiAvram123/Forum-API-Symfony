@@ -19,16 +19,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class LoginController extends BaseController
 {
 
-//    /**
-//     * @Route("/login/{uid}" , methods = {"GET"})
-//     * @param string $uid
-//
-//     * @return JsonResponse
-//     */
-//
-//    public function loginWithUID(string $uid, JWTTokenManagerInterface $jwtManager)
-//    {
-//
+    /**
+     * @Route("/login" , methods = {"GET"})
+
+     * @param JWTTokenManagerInterface $jwtManager
+     */
+
+    public function login( JWTTokenManagerInterface $jwtManager) : JsonResponse
+    {
+
 //        $userRepo = $this->getDoctrine()->getRepository(User::class);
 //
 //        $user = $userRepo->find($uid);
@@ -41,6 +40,6 @@ class LoginController extends BaseController
 //        }
 //        $token = $jwtManager->create($user);
 //        return $this->json(new AuthenticationResponse($errors, new AuthenticationData($user,$token)));
-//
-//    }
+          return $this->json("");
+    }
 }
