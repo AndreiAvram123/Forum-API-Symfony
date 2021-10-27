@@ -1,18 +1,20 @@
 
 security:
     enable_authenticator_manager: true
-    # ...
+
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
     providers:
         users:
             entity:
                 class: App\Entity\User
+
+
     firewalls:
-        login:
-            pattern: ^/api/login
-            stateless: true
+        main:
             json_login:
-                check_path: /api/login_check
+                check_path: api_login_check
 
         api:
             pattern:   ^/api
@@ -21,4 +23,5 @@ security:
 
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }

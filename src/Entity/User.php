@@ -6,31 +6,48 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
+use JsonSerializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
- * @UniqueEntity(fields={"displayName"}, message="There is already an account with this username")
- */
-class User implements  UserInterface,\JsonSerializable
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: "users")]
+#[UniqueEntity(fields: ['email'],message: "There is already an account with this email")]
+#[UniqueEntity(fields: ['displayName'],message: "There is already an account with this username")]
+
+class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUserInterface
 {
 
+    #[Pure] public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->receiver = new ArrayCollection();
+        $this->sentMessages = new ArrayCollection();
+        $this->createdPosts = new ArrayCollection();
+        $this->favoritePosts = new ArrayCollection();
+        $this->friends = new ArrayCollection();
+        $this->chats = new ArrayCollection();
+        $this->sentFriendRequests = new ArrayCollection();
+        $this->receivedFriendRequests = new ArrayCollection();
+    }
+
+    #[ORM\Column(type: "string",unique: true)]
+    private string $hashedPassword;
 
 
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string", length = 50)
-     */
-    private string $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
+    #[ORM\Column(type: "integer")]
+    private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\Email()
-     */
-    private ?string $email;
+
+    #[ORM\Column(type: "string",unique: true)]
+    #[Assert\Email]
+    private string $email;
 
     /**
      * @ORM\Column(type="json")
@@ -100,34 +117,27 @@ class User implements  UserInterface,\JsonSerializable
 
     public function getUserIdentifier($name, $arguments):string
     {
-        return $this->id;
+        return $this->email;
     }
 
-    public function __construct()
-    {
-        $this->comments = new ArrayCollection();
-        $this->receiver = new ArrayCollection();
-        $this->sentMessages = new ArrayCollection();
-        $this->createdPosts = new ArrayCollection();
-        $this->favoritePosts = new ArrayCollection();
-        $this->friends = new ArrayCollection();
-        $this->chats = new ArrayCollection();
-        $this->sentFriendRequests = new ArrayCollection();
-        $this->receivedFriendRequests = new ArrayCollection();
-    }
-
-    public function getId(): string
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      */
-    public function setId($id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
+
+
+
 
 
     public function getEmail(): ?string
@@ -176,14 +186,16 @@ class User implements  UserInterface,\JsonSerializable
      */
     public function getPassword(): string
     {
-        return "nothing";
+        return $this->hashedPassword;
     }
-
+    public function setPassword(string $hashedPassword){
+        $this->hashedPassword = $hashedPassword;
+    }
 
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt():string
     {
         return "123456789";
     }
@@ -261,7 +273,9 @@ class User implements  UserInterface,\JsonSerializable
     }
 
 
-    public function jsonSerialize()
+    #[ArrayShape(
+        ['id' => "integer", 'displayName' => "string", 'email' => "string", 'profilePicture' => "null|string"])]
+    public function jsonSerialize():array
     {
         return [
             'id' => $this->getId(),

@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class BaseController extends AbstractController
 {
 
+
     protected function persistObject($object)
     {
         $em = $this->getDoctrine()->getManager();
