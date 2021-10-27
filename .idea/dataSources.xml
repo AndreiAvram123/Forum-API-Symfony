@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="forum-api-qa" uuid="599772fb-4a24-44e9-99bd-507b9cb3a64b">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-34-250-16-127.eu-west-1.compute.amazonaws.com:5432/d33i9k3qptemb2</jdbc-url>
+    </data-source>
+  </component>
+</project>
