@@ -32,16 +32,6 @@ use Symfony\Component\VarDumper\Cloner\Data;
  */
 class PostController extends BaseController
 {
-    private array $encoders;
-    private array $normalizers;
-    private Serializer $serializer;
-
-    function __construct()
-    {
-        $this->encoders = [new JsonEncoder()];
-        $this->normalizers = [new ObjectNormalizer()];
-        $this->serializer = new Serializer($this->normalizers, $this->encoders);
-    }
 
     /**
      *
