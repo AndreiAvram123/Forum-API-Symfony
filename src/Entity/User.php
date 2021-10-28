@@ -24,6 +24,7 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
 
     #[Pure] public function __construct()
     {
+        $this->roles = ['user'];
         $this->comments = new ArrayCollection();
         $this->receiver = new ArrayCollection();
         $this->sentMessages = new ArrayCollection();
@@ -49,22 +50,14 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
     #[Assert\Email]
     private string $email;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type : 'json')]
     private array $roles = [];
 
-
-    /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user", orphanRemoval=true, cascade={"remove"})
-     */
-
-
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: Comment::class, cascade: ["remove"], orphanRemoval: true)]
     private ArrayCollection $comments;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="sender", orphanRemoval=true)
-     */
+   // #[ORM\OneToMany(mappedBy: "sender", targetEntity: Message::class, orphanRemoval: true)]
+
     private ArrayCollection $receiver;
 
     /**
@@ -73,36 +66,22 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
     private ArrayCollection $sentMessages;
 
 
-    /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user", orphanRemoval=true, cascade={"remove"})
-     */
+  //  #[ORM\OneToMany(mappedBy: "user", targetEntity: Post::class, cascade: ["remove"], orphanRemoval: true)]
     private ArrayCollection $createdPosts;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Post::class)
-     */
+ //   #[ORM\ManyToMany(targetEntity: Post::class)]
     private ArrayCollection $favoritePosts;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     * @Assert\Length(min = 3 ,max =20)
-     */
+    #[ORM\Column(type: "string")]
     private ?string $displayName;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class)
-     */
+    #[ORM\ManyToMany(targetEntity: User::class)]
     private ArrayCollection $friends;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Chat::class, mappedBy="users")
-     */
+   // #[ORM\ManyToMany(targetEntity: Chat::class,mappedBy: "users")]
     private ArrayCollection $chats;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: "string")]
     private ?string $profilePicture;
 
     /**

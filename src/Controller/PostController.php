@@ -46,15 +46,17 @@ class PostController extends BaseController
     }
 
     /**
-     * @Route("/posts/page/{postID}",methods={"GET"})
+     * @Route("/posts",methods={"GET"})
      *
      * @param int $postID
      * @return JsonResponse
      */
-    public function fetchPostsPage(int $postID): JsonResponse
+    //todo
+    public function fetchPostsPage(int $offset): JsonResponse
     {
-        $results = $this->getDoctrine()->getRepository(Post::class)
-            ->fetchPage($postID);
+        $results = [];
+//        $results = $this->getDoctrine()->getRepository(Post::class)
+//            ->fetchPage($postID);
 
         return new JsonResponse($results);
     }
