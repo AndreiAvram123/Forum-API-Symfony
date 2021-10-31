@@ -1,7 +1,7 @@
 {
     "type": "project",
     "license": "proprietary",
-    "name" : "Forum",
+    "name" : "andrei/forum-app",
     "description": "forum_api",
     "minimum-stability": "stable",
     "prefer-stable": true,
