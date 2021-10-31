@@ -12,9 +12,10 @@ security:
 
 
     firewalls:
-        main:
+        lgoin:
             json_login:
                 check_path: api_login_check
+
 
         api:
             pattern:   ^/api

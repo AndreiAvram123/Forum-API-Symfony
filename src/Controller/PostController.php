@@ -33,15 +33,14 @@ use Symfony\Component\VarDumper\Cloner\Data;
 class PostController extends BaseController
 {
 
-    /**
-     *
-     * @Route("/recentPosts", methods={"GET"})
-     */
+
+    #[Route("/recentPosts",methods: ['GET'])]
     public function fetchRecentPosts():JsonResponse
     {
-        $repo = $this->getDoctrine()->getRepository(Post::class);
-        $results = $repo->fetchRecentPosts();
-
+        $results = $this
+            ->getDoctrine()
+            ->getRepository(Post::class)
+             ->fetchRecentPosts();
         return $this->json($results);
     }
 

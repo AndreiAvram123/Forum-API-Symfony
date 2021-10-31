@@ -1,14 +1,21 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
 services:
     App\ExceptionHandler:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    acme_api.event.jwt_invalid_listener:
+        class: App\EventListener\JWTInvalidListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTInvalid }
+
+    acme_api.event.jwt_notfound_listener:
+       class: App\Security\AuthenticationFailedHandler
+       tags:
+           - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTNotFound }
+
+
 
     # default configuration for services in *this* file
     _defaults:
@@ -25,5 +32,3 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones

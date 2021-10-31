@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Exception\AuthenticationException;
 use App\Exception\ValidationException;
 use App\Exception\WrongCredentialsException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -21,14 +22,14 @@ class ExceptionHandler implements EventSubscriberInterface
     #[ArrayShape([KernelEvents::EXCEPTION => "string"])] public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::EXCEPTION => 'onKernelException',
+            KernelEvents::EXCEPTION => 'onKernelException'
         ];
     }
     public function onKernelException(ExceptionEvent $event)
     {
         // You get the exception object from the received event
         $exception = $event->getThrowable();
-        $response = new JsonResponse("");
+        $response = new JsonResponse();
         if($exception instanceof NotEncodableValueException){
             // create json response and set the nice message from exception
             $response = new JsonResponse(
@@ -40,6 +41,9 @@ class ExceptionHandler implements EventSubscriberInterface
         }
         if($exception instanceof ValidationException){
             $response = $this->provideValidationResponse($exception->validationErrors);
+        }
+        if($exception instanceof AuthenticationException){
+            $response = $this->generateJWTFailedResponse($exception);
         }
 
         // set it as response and it will be sent
@@ -55,6 +59,13 @@ class ExceptionHandler implements EventSubscriberInterface
     private function provideValidationResponse(array$validationErrors):JsonResponse{
         return new JsonResponse(
              ["errors" => $validationErrors]
+        );
+    }
+
+    private function generateJWTFailedResponse(AuthenticationException $authenticationException):JsonResponse
+    {
+        return new JsonResponse(
+            ['error' => $authenticationException->getMessage()]
         );
     }
 }
