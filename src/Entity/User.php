@@ -141,7 +141,7 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
      */
     public function getUsername(): string
     {
-        return (string)$this->email;
+        return $this->email;
     }
 
     /**

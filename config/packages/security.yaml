@@ -9,15 +9,22 @@ security:
         users:
             entity:
                 class: App\Entity\User
-
+                property: email
 
     firewalls:
-        main:
+        login:
+            pattern: ^/api/login
+            stateless: true
             json_login:
-                check_path: api_login_check
+                check_path: /api/login_check
+
+        register:
+            pattern: ^/api/register
+            stateless: true
+
 
         api:
-            pattern:   ^/api
+            pattern: ^/api
             stateless: true
             jwt: ~
 
