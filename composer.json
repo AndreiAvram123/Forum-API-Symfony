@@ -1,7 +1,7 @@
 {
     "type": "project",
     "license": "proprietary",
-    "name" : "forum",
+    "name" : "Forum",
     "description": "forum_api",
     "minimum-stability": "stable",
     "prefer-stable": true,
