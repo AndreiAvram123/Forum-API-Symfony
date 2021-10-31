@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Exception\ValidationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,16 +27,20 @@ class BaseController extends AbstractController
         $this->validator = $validator;
     }
 
+    /**
+     * @throws ValidationException
+     */
     protected function isObjectValid($object): bool{
-        return count($this->validator->validate($object)) === 0;
-    }
-    protected function getValidationErrors($object): array
-    {
-        $errors = [];
-        foreach ($this->validator->validate($object) as $violation){
-            $errors[] = $violation->getMessage();
+        $validationErrors = $this->validator->validate($object);
+        if(count($validationErrors) === 0) {
+            return true;
+        }else{
+            $errorsString = [];
+            foreach ($this->validator->validate($object) as $violation){
+                $errorsString[] = $violation->getMessage();
+            }
+            throw new ValidationException($errorsString);
         }
-        return $errors;
     }
 
     protected function persistObject($object)

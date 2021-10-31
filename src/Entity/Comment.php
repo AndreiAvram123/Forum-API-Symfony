@@ -3,52 +3,39 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ORM\Entity(repositoryClass=CommentRepository::class)
- */
+#[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment implements \JsonSerializable
 {
 
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\NotNull()
-     */
-    private $commentDate;
-
-    /**
-     * @ORM\Column(type="text")
-     * * @Assert\NotBlank()
-     */
-    private $content;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull()
-     */
-    private $user;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="comments")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $post;
+    #[ORM\Id]
+    #[ORM\GeneratedValue()]
+    #[ORM\Column(type: "integer")]
+    private int $id;
 
 
-    public function jsonSerialize()
+    #[ORM\Column(type: "datetime")]
+    #[Assert\NotNull]
+    private DateTimeInterface $commentDate;
+
+    #[ORM\Column(type: "text")]
+    #[NotBlank]
+    #[Assert\NotNull]
+    private string $content;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $creator;
+
+
+    #[ArrayShape(['id' => "int", 'postID' => "int", 'date' => "int", 'content' => "string", 'user' => "\App\Entity\User|null"])] public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),
@@ -89,29 +76,16 @@ class Comment implements \JsonSerializable
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getCreator(): ?User
     {
-        return $this->user;
+        return $this->creator;
     }
 
-    public function setUser(?User $user): self
+    public function setCreator(?User $creator): self
     {
-        $this->user = $user;
+        $this->creator = $creator;
 
         return $this;
     }
-
-    public function getPost(): ?Post
-    {
-        return $this->post;
-    }
-
-    public function setPost(?Post $post): self
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
 
 }

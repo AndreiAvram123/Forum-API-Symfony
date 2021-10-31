@@ -24,6 +24,7 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
 
     #[Pure] public function __construct()
     {
+        $this->roles = ['user'];
         $this->comments = new ArrayCollection();
         $this->receiver = new ArrayCollection();
         $this->sentMessages = new ArrayCollection();
@@ -33,6 +34,7 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
         $this->chats = new ArrayCollection();
         $this->sentFriendRequests = new ArrayCollection();
         $this->receivedFriendRequests = new ArrayCollection();
+        $this->profilePicture = null;
     }
 
     #[ORM\Column(type: "string",unique: true)]
@@ -40,7 +42,7 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
 
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     #[ORM\Column(type: "integer")]
     private int $id;
 
@@ -49,71 +51,51 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
     #[Assert\Email]
     private string $email;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type : 'json')]
     private array $roles = [];
 
 
-    /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user", orphanRemoval=true, cascade={"remove"})
-     */
+   // #[ORM\OneToMany(mappedBy: "sender", targetEntity: Message::class, orphanRemoval: true)]
 
-
-    private ArrayCollection $comments;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="sender", orphanRemoval=true)
-     */
     private ArrayCollection $receiver;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="sender", orphanRemoval=true )
-     */
+//
+//    /**
+//     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="sender", orphanRemoval=true )
+//     */
     private ArrayCollection $sentMessages;
 
 
-    /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user", orphanRemoval=true, cascade={"remove"})
-     */
+  //  #[ORM\OneToMany(mappedBy: "user", targetEntity: Post::class, cascade: ["remove"], orphanRemoval: true)]
     private ArrayCollection $createdPosts;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Post::class)
-     */
+ //   #[ORM\ManyToMany(targetEntity: Post::class)]
     private ArrayCollection $favoritePosts;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     * @Assert\Length(min = 3 ,max =20)
-     */
+    #[ORM\Column(type: "string")]
     private ?string $displayName;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class)
-     */
-    private ArrayCollection $friends;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    private  $friends;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Chat::class, mappedBy="users")
-     */
+   // #[ORM\ManyToMany(targetEntity: Chat::class,mappedBy: "users")]
     private ArrayCollection $chats;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: "string",nullable: true)]
+
     private ?string $profilePicture;
 
     /**
      * @ORM\OneToMany(targetEntity=FriendRequest::class, mappedBy="sender", orphanRemoval=true)
      */
-    private ArrayCollection $sentFriendRequests;
+    private  $sentFriendRequests;
 
     /**
      * @ORM\OneToMany(targetEntity=FriendRequest::class, mappedBy="receiver", orphanRemoval=true)
      */
-    private ArrayCollection $receivedFriendRequests;
+    private  $receivedFriendRequests;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Comment::class, orphanRemoval: true)]
+    private  $comments;
 
     public function getUserIdentifier($name, $arguments):string
     {
