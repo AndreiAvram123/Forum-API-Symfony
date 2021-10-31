@@ -99,8 +99,7 @@ class AuthenticationController extends BaseController
      * @throws ValidationException
      */
     #[Route(path: '/register', methods: ['POST'])]
-    public function register(Request $request,
-                             UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function register(Request $request): JsonResponse
     {
         /**
          * @var $registerRequest RegisterRequest
@@ -112,17 +111,23 @@ class AuthenticationController extends BaseController
             );
 
         if ($this->isObjectValid($registerRequest)) {
-            $user = new User();
-            $hashedPassword = $passwordHasher->hashPassword(
-                $user,
-                $registerRequest->password
-            );
-            $user->setPassword($hashedPassword);
-            $user->setDisplayName($registerRequest->username);
-            $user->setEmail($registerRequest->email);
+            $user = $this->fromRegisterRequestToUser($registerRequest);
             $this->persistObject($user);
             return $this->json($user);
         }
         return $this->json("");
+    }
+
+    private function fromRegisterRequestToUser(
+        RegisterRequest $registerRequest):User{
+        $user = new User();
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $registerRequest->password
+        );
+        $user->setPassword($hashedPassword);
+        $user->setDisplayName($registerRequest->username);
+        $user->setEmail($registerRequest->email);
+        return $user;
     }
 }

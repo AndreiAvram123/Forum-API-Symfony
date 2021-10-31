@@ -30,14 +30,9 @@ class Comment implements \JsonSerializable
     #[Assert\NotNull]
     private string $content;
 
-    #[ORM\ManyToOne(targetEntity: User::class,inversedBy: "comments")]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
-    private User $user;
-
-   // #[ORM\ManyToOne(targetEntity: Post::class,inversedBy: "comments")]
-   // #[ORM\JoinColumn(nullable: false)]
-    private Post $post;
+    private $creator;
 
 
     #[ArrayShape(['id' => "int", 'postID' => "int", 'date' => "int", 'content' => "string", 'user' => "\App\Entity\User|null"])] public function jsonSerialize(): array
@@ -81,28 +76,16 @@ class Comment implements \JsonSerializable
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getCreator(): ?User
     {
-        return $this->user;
+        return $this->creator;
     }
 
-    public function setUser(?User $user): self
+    public function setCreator(?User $creator): self
     {
-        $this->user = $user;
+        $this->creator = $creator;
 
         return $this;
     }
-
-    public function getPost(): Post
-    {
-        return $this->post;
-    }
-
-    public function setPost(Post $post): self
-    {
-        $this->post = $post;
-        return $this;
-    }
-
 
 }

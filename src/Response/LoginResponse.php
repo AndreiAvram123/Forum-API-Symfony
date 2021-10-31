@@ -7,6 +7,6 @@ namespace App\Response;
 class LoginResponse
 {
    public function __construct(
-       string $accessToken
+       public string $accessToken
    ){}
 }
