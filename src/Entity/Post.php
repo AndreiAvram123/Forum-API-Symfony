@@ -6,6 +6,7 @@ use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 
 
@@ -21,30 +22,30 @@ class Post implements \JsonSerializable
     #[ORM\Column(type: "string",length: 255)]
     private ?string $title;
 
-
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $content;
 
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: "datetime")]
     private ?\DateTimeInterface $date;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post", orphanRemoval=true)
      */
+
     private $comments;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: "integer")]
     private int $bookmarkedTime = 0;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="post", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Image::class, orphanRemoval: true)]
     private $images;
+
+    public function __construct()
+    {
+        $this->images = new ArrayCollection();
+    }
+
 
 
     public function increaseBookmarkTime(){
@@ -53,11 +54,7 @@ class Post implements \JsonSerializable
     public function decreaseBookmarkTime(){
         $this->bookmarkedTime --;
     }
-    #[Pure] public function __construct()
-    {
-        $this->comments = new ArrayCollection();
-        $this->images = new ArrayCollection();
-    }
+
 
 
 
@@ -93,31 +90,18 @@ class Post implements \JsonSerializable
     }
 
 
-    public function jsonSerialize()
+     public function jsonSerialize()
     {
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
-            'images' => $this->getImages()->toArray(),
+            'images'=>$this->getImages(),
             'date' => $this->getDate()->getTimestamp(),
             'content' => $this->getContent(),
-            'author' => $this->getUser(),
-            'numberOfComments' => $this->getComments()->count(),
             'bookmarkedTime' =>$this->getBookMarkedTime()
         ];
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 
 
     public function getDate(): ?\DateTimeInterface
@@ -202,6 +186,5 @@ class Post implements \JsonSerializable
 
         return $this;
     }
-
 
 }

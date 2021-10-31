@@ -24,12 +24,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\VarDumper\Cloner\Data;
 
-
-/**
- * Class PostController
- * @package App\Controller
- * @Route("/api")
- */
+#[Route("/api")]
 class PostController extends BaseController
 {
 
@@ -44,18 +39,11 @@ class PostController extends BaseController
         return $this->json($results);
     }
 
-    /**
-     * @Route("/posts",methods={"GET"})
-     *
-     * @param int $postID
-     * @return JsonResponse
-     */
-    //todo
-    public function fetchPostsPage(int $offset): JsonResponse
+     #[Route("/posts",methods: ['GET'])]
+    public function fetchPostsPage(Request $request): JsonResponse
     {
-        $results = [];
-//        $results = $this->getDoctrine()->getRepository(Post::class)
-//            ->fetchPage($postID);
+        $results = $this->getDoctrine()->getRepository(Post::class)
+            ->findWithOffset($request->query->get('offset'));
 
         return new JsonResponse($results);
     }

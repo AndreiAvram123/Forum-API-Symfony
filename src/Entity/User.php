@@ -263,7 +263,7 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
             'id' => $this->getId(),
             'displayName' => $this->getDisplayName(),
             'email' => $this->getUsername(),
-            'profilePicture' => $this->getProfilePicture(),
+            'profilePicture' => $this->getProfilePicture()
         ];
     }
 

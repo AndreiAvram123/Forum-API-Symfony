@@ -5,28 +5,40 @@ namespace App\Entity;
 use App\Repository\ImageRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=ImageRepository::class)
- */
+
+#[ORM\Entity]
 class Image implements \JsonSerializable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: "image_id", type: 'integer')]
+    private int $id;
+
+    #[ORM\Column(type: "string",length: 255)]
+    private string $url;
+
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'images')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Post $post;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @return string
      */
-    private $imageURL;
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
 
     /**
-     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="images")
-     * @ORM\JoinColumn(nullable=false)
+     * @param string $url
      */
-    private $post;
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
+    }
+
+
 
 
 
@@ -36,16 +48,11 @@ class Image implements \JsonSerializable
         return $this->id;
     }
 
-    public function getImageURL(): ?string
-    {
-        return $this->imageURL;
-    }
 
-    public function setImageURL(string $imageURL): self
-    {
-        $this->imageURL = $imageURL;
 
-        return $this;
+    public function jsonSerialize(): ?string
+    {
+        return $this->getImageURL();
     }
 
     public function getPost(): ?Post
@@ -58,10 +65,5 @@ class Image implements \JsonSerializable
         $this->post = $post;
 
         return $this;
-    }
-
-    public function jsonSerialize()
-    {
-        return $this->getImageURL();
     }
 }

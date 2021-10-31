@@ -7,5 +7,12 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://ec2-34-250-16-127.eu-west-1.compute.amazonaws.com:5432/d33i9k3qptemb2</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="forum-api-develop" uuid="a952fc97-60bc-4be0-810e-a391f6412123">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-54-155-92-75.eu-west-1.compute.amazonaws.com:5432/d6lhmbsh832f5q</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

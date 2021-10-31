@@ -51,13 +51,12 @@ class PostRepository extends ServiceEntityRepository
     }
 
 
-    public function fetchPage(int $postID)
+    public function findWithOffset(int $offset)
     {
         return $this->createQueryBuilder('p')
-            ->where('p.id < :postID')
             ->orderBy("p.id", "DESC")
-            ->setParameter('postID', $postID)
             ->setMaxResults($this->postsPerPage)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
     }
