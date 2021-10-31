@@ -1,32 +1,30 @@
 <?php
 
 namespace App\Controller;
-
-use App\Constants\ResponseExamples;
 use App\Entity\Chat;
 use App\Entity\User;
 use App\JsonRequestHandler;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
-use Google\Client;
+
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
-/**
- * Class UserController
- * @package App\Controller
- * @Route("/api")
- */
-class UserControllerAbstract extends BaseController
+#[Route("/api")]
+class UserController extends BaseController
 {
-    private Client $googleClient;
 
-    public function __construct()
+
+    public function __construct(
+        private TokenStorageInterface $tokenStorageInterface,
+        private JWTTokenManagerInterface $jwtManager)
     {
-     $this->googleClient = new Client();
     }
 
     /**
@@ -51,15 +49,18 @@ class UserControllerAbstract extends BaseController
 
     }
 
-
-    /**
-     * @Route("/user/{userID}", methods={"GET"})
-     * @param string $userID
-     * @return JsonResponse
-     */
-    public function fetchUser(string $userID):JsonResponse
+    
+    #[Route("/userDetails",methods: ['GET'])]
+    public function fetchUser():JsonResponse
     {
-        return $this->json($this->getObjectWithID($userID,User::class));
+        $token = $this->tokenStorageInterface->getToken();
+        $user =  $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository(User::class)
+            ->findByEmail($token->getUserIdentifier());
+
+        return $this->json($user);
     }
 
 
