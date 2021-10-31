@@ -13,12 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - uses: "finnp/create-file-action@master"
-      env:
-        FILE_NAME: ".env"
-        FILE_DATA: ""
-
+    
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
