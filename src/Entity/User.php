@@ -97,7 +97,7 @@ class User implements  UserInterface, JsonSerializable, PasswordAuthenticatedUse
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Comment::class, orphanRemoval: true)]
     private  $comments;
 
-    public function getUserIdentifier($name, $arguments):string
+    public function getUserIdentifier():string
     {
         return $this->email;
     }

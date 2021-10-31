@@ -27,10 +27,8 @@ class JWTCreatedListener
      */
     public function onJWTCreated(JWTCreatedEvent $event)
     {
-        $request = $this->requestStack->getCurrentRequest();
 
         $payload = $event->getData();
-        $payload['ip'] = $request->getClientIp();
 
         $event->setData($payload);
 
