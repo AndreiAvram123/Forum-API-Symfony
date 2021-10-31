@@ -5,16 +5,25 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
-    acme_api.event.jwt_invalid_listener:
-        class: App\EventListener\JWTInvalidListener
+    acme_api.event.jwt_created_listener:
+        class: App\JWT\JWTCreatedListener
+        arguments: [ '@request_stack' ]
         tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTInvalid }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
 
     acme_api.event.jwt_notfound_listener:
-       class: App\Security\AuthenticationFailedHandler
-       tags:
-           - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTNotFound }
+        class: App\JWT\JWTNotFoundListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
 
+    acme_api.event.authentication_failure_listener:
+        class: App\JWT\AuthenticationFailureListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthenticationFailureResponse }
+    acme_api.event.jwt_invalid_listener:
+        class: App\JWT\JWTInvalidListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTInvalid }
 
 
     # default configuration for services in *this* file
@@ -22,8 +31,6 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
         exclude:

@@ -9,20 +9,20 @@ security:
         users:
             entity:
                 class: App\Entity\User
-
+                property: email
 
     firewalls:
-        lgoin:
+        login:
+            pattern: ^/api/login
+            stateless: true
             json_login:
-                check_path: api_login_check
-
+                check_path: /api/login_check
 
         api:
-            pattern:   ^/api
+            pattern: ^/api
             stateless: true
             jwt: ~
 
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }

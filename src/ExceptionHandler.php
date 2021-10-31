@@ -29,7 +29,7 @@ class ExceptionHandler implements EventSubscriberInterface
     {
         // You get the exception object from the received event
         $exception = $event->getThrowable();
-        $response = new JsonResponse();
+        $response = new JsonResponse($event->getThrowable()->getMessage());
         if($exception instanceof NotEncodableValueException){
             // create json response and set the nice message from exception
             $response = new JsonResponse(
